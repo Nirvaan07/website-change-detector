@@ -1,4 +1,4 @@
-# Website Change Detector 🔍
+# Website Change Detector 
 
 A full-stack web application designed to monitor web pages for updates using automated headless scraping and SHA-256 cryptographic hashing. Built as a club project.
 
