@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Change Monitor</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f0;
+            --panel-bg: #ffffff;
+            --border-color: #111111;
+            --accent-green: #2e7d32;
+            --accent-red: #c62828;
+            --accent-purple: #512da8;
+            --text-main: #111111;
+            --text-muted: #666666;
+        }
+
+        body {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* Single-line Header Bar */
+        header {
+            border: 2px solid var(--border-color);
+            background: var(--panel-bg);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            box-shadow: 4px 4px 0px var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        h1 {
+            font-size: 1.15rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            white-space: nowrap;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .util-btn {
+            height: 36px;
+            padding: 0 14px;
+            border: 2px solid var(--border-color);
+            background: var(--panel-bg);
+            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 2px 2px 0px var(--border-color);
+            cursor: pointer;
+            letter-spacing: -0.3px;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .util-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 3px 3px 0px var(--border-color);
+        }
+
+        .util-btn:active {
+            transform: translateY(0);
+            box-shadow: 1px 1px 0px var(--border-color);
+        }
+
+        .reset-btn {
+            background: var(--accent-purple);
+            color: #ffffff;
+        }
+
+        /* Centered Modal Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .about-modal {
+            width: 320px;
+            border: 2px solid var(--border-color);
+            background: var(--panel-bg);
+            padding: 24px;
+            text-align: center;
+            box-shadow: 6px 6px 0px var(--border-color);
+            text-transform: uppercase;
+        }
+
+        .about-modal h3 {
+            margin-top: 0;
+            font-size: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+        }
+
+        .about-modal p {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 0 0 20px 0;
+            font-weight: bold;
+        }
+
+        .about-modal button {
+            width: 100%;
+            background: var(--text-main);
+            color: #ffffff;
+            border: 2px solid var(--border-color);
+            padding: 10px;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        .card {
+            border: 2px solid var(--border-color);
+            background: var(--panel-bg);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 4px 4px 0px var(--border-color);
+        }
+
+        .card h2 {
+            font-size: 1rem;
+            margin-top: 0;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        button.action-btn {
+            background: var(--text-main);
+            color: #ffffff;
+            border: 2px solid var(--border-color);
+            padding: 12px 16px;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        button.action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        button.action-btn:active {
+            transform: translateY(0);
+            box-shadow: 1px 1px 0px #000;
+        }
+
+        button.secondary {
+            background: #ffffff;
+            color: var(--text-main);
+        }
+
+        .url-box {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        input[type="text"], select {
+            padding: 10px 12px;
+            border: 2px solid var(--border-color);
+            font-family: inherit;
+            font-size: 0.85rem;
+            background: #fafafa;
+        }
+
+        input[type="text"] {
+            flex: 1;
+        }
+
+        .settings-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+            align-items: center;
+        }
+
+        .settings-row label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        /* Status Display Box */
+        .status-display {
+            margin-top: 20px;
+            border: 2px dashed var(--border-color);
+            padding: 20px;
+            background: #fafafa;
+            text-align: center;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border: 2px solid var(--border-color);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .status-idle { background: #e0e0e0; color: #333; }
+        .status-stable { background: #c8e6c9; color: var(--accent-green); }
+        .status-changed { background: #ffccbc; color: var(--accent-red); }
+        .status-error { background: #ffcdd2; color: #b71c1c; }
+        .status-blocked { background: #ffe0b2; color: #e65100; }
+
+        .status-details {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Centered Modal for About -->
+    <div class="modal-overlay" id="aboutModal">
+        <div class="about-modal">
+            <h3>Project Info</h3>
+            <p>
+                Presented by:<br><br>
+                Nirvaan Jain<br>
+                [25BIT0234]
+            </p>
+            <button onclick="toggleAbout(event)">Close</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Single-line Header Bar -->
+        <header>
+            <h1>Website Change Monitor</h1>
+            <div class="header-right">
+                <button class="util-btn reset-btn" onclick="resetDatabase()">Reset</button>
+                <button class="util-btn" onclick="toggleAbout(event)">About</button>
+            </div>
+        </header>
+
+        <!-- Quick Demo Panel -->
+        <div class="card">
+            <h2>Quick Demo Controls</h2>
+            <p class="status-details" style="margin-bottom: 12px;">Select a test scenario below to load the URL:</p>
+            <div class="button-group">
+                <button class="action-btn secondary" onclick="loadUrl('http://localhost:3000/mock-stable')">Load Stable Page</button>
+                <button class="action-btn secondary" onclick="loadUrl('http://localhost:3000/mock-dynamic')">Load Dynamic Page</button>
+            </div>
+            <div style="margin-top: 12px;">
+                <button class="action-btn" style="width: 100%; background: #d32f2f;" onclick="triggerUpdate()">Simulate Website Update</button>
+            </div>
+        </div>
+
+        <!-- Custom URL Input & Interval Panel (Req #1) -->
+        <div class="card">
+            <h2>Target URL Scanner & Scheduler</h2>
+            <div class="url-box">
+                <input type="text" id="urlInput" placeholder="Enter web page URL here...">
+            </div>
+            <div class="settings-row">
+                <label for="intervalSelect">Check Interval:</label>
+                <select id="intervalSelect" style="flex: 1;">
+                    <option value="15">15 Minutes</option>
+                    <option value="30">30 Minutes</option>
+                    <option value="60">1 Hour</option>
+                    <option value="360">6 Hours</option>
+                    <option value="1440" selected>24 Hours</option>
+                </select>
+                <button class="action-btn" onclick="runCheck()" style="padding: 10px 20px;">Run Check</button>
+            </div>
+        </div>
+
+        <!-- Visual Result Screen (Req #8 Status: OK, ERROR, BLOCKED) -->
+        <div class="card">
+            <h2>Live Status Feed</h2>
+            <div class="status-display" id="statusContainer">
+                <div class="status-badge status-idle" id="statusBadge">System Idle</div>
+                <p class="status-details" id="statusText">Select a test scenario or enter a URL, then click 'Run Check' to begin.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleAbout(event) {
+            event.stopPropagation();
+            const modal = document.getElementById('aboutModal');
+            modal.classList.toggle('active');
+        }
+
+        function loadUrl(url) {
+            document.getElementById('urlInput').value = url;
+            
+            const badge = document.getElementById('statusBadge');
+            const text = document.getElementById('statusText');
+            
+            badge.className = 'status-badge status-idle';
+            badge.textContent = 'System Idle';
+            text.textContent = 'URL loaded. Click \'Run Check\' to begin scanning.';
+        }
+
+        async function triggerUpdate() {
+            try {
+                const res = await fetch('/api/trigger-update', { method: 'POST' });
+                const data = await res.json();
+                
+                const badge = document.getElementById('statusBadge');
+                badge.className = 'status-badge status-changed';
+                badge.textContent = 'Simulated Update Ready';
+                
+                document.getElementById('statusText').textContent = "A new version of the dynamic page has been created. Now click 'Load Dynamic Page' and then click 'Run Check'.";
+            } catch (err) {
+                alert('Failed to trigger update');
+            }
+        }
+
+        async function resetDatabase() {
+            if (!confirm("Are you sure you want to reset the database? All tracking history will be cleared.")) return;
+
+            try {
+                const res = await fetch('/api/reset-db', { method: 'POST' });
+                const data = await res.json();
+                
+                const badge = document.getElementById('statusBadge');
+                badge.className = 'status-badge status-idle';
+                badge.textContent = 'Database Cleared';
+                
+                document.getElementById('statusText').textContent = "Database wiped clean. All URLs will now act as a first-time check.";
+                document.getElementById('urlInput').value = '';
+            } catch (err) {
+                alert('Failed to reset database');
+            }
+        }
+
+        async function runCheck() {
+            const url = document.getElementById('urlInput').value.trim();
+            const intervalMinutes = document.getElementById('intervalSelect').value;
+
+            if (!url) {
+                alert('Please select a mock page or enter a valid URL first.');
+                return;
+            }
+
+            const badge = document.getElementById('statusBadge');
+            const text = document.getElementById('statusText');
+            
+            badge.className = 'status-badge status-idle';
+            badge.textContent = 'Scanning...';
+            text.textContent = 'Analyzing page snapshots in the background...';
+
+            try {
+                const response = await fetch('/api/check', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url, intervalMinutes })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'ERROR') {
+                    badge.className = 'status-badge status-error';
+                    badge.textContent = 'Status: ERROR';
+                    text.textContent = result.message;
+                    return;
+                }
+
+                if (result.status === 'BLOCKED') {
+                    badge.className = 'status-badge status-blocked';
+                    badge.textContent = 'Status: BLOCKED';
+                    text.textContent = result.message;
+                    return;
+                }
+
+                if (result.hasChanged) {
+                    badge.className = 'status-badge status-changed';
+                    badge.textContent = 'Status: OK (Change Detected)';
+                    text.textContent = `Update found! The web page content has changed since the last check. (Checked at: ${new Date(result.lastChecked).toLocaleTimeString()})`;
+                } else {
+                    badge.className = 'status-badge status-stable';
+                    badge.textContent = 'Status: OK (Stable)';
+                    text.textContent = `The page is stable. No modifications found. (Interval set to: ${intervalMinutes} mins)`;
+                }
+
+            } catch (err) {
+                badge.className = 'status-badge status-error';
+                badge.textContent = 'Connection Error';
+                text.textContent = 'Could not connect to the server.';
+            }
+        }
+    </script>
+</body>
+</html>

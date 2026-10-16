@@ -1,0 +1,24 @@
+{
+  "https://httpbin.org/html": {
+    "lastChecked": "2026-10-16T17:55:25.460Z",
+    "previousHash": "8e3a23ca0b972c75cb12dea13325e47ccc62d20bdfa7ca3d1be80d1069f407e3",
+    "currentHash": "8e3a23ca0b972c75cb12dea13325e47ccc62d20bdfa7ca3d1be80d1069f407e3"
+  },
+  "http://localhost:3000/mock-page": {
+    "hash": "9e4a4e99a6d7663b0e9eb2402492f5c1174aec68a83781f28ce7ae6faea937c8",
+    "lastChecked": "2026-10-16T18:32:52.815Z"
+  },
+  "https://en.wikipedia.org/wiki/Main_Page": {
+    "lastChecked": "2026-10-16T18:26:16.024Z",
+    "previousHash": "f00c34581c5005ab86b689d277a72f3ae9778fdd0a959292e7f4cb55d5ba0ec4",
+    "currentHash": "f00c34581c5005ab86b689d277a72f3ae9778fdd0a959292e7f4cb55d5ba0ec4"
+  },
+  "http://localhost:3000/mock-stable": {
+    "hash": "f527288c7b1b8311c640e677e8622a7b491ae432aee731b0a61d1fb50204815c",
+    "lastChecked": "2026-10-16T19:18:36.880Z"
+  },
+  "http://localhost:3000/mock-dynamic": {
+    "hash": "3b98d0ecc084ae3e183fe34abebcfc79403857ced5aa2a1b526750b3a73b6d5b",
+    "lastChecked": "2026-10-16T19:12:08.665Z"
+  }
+}
